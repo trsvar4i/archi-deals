@@ -34,6 +34,8 @@ jobs:
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
+        with:
+          enablement: true
 
       - name: Upload site
         uses: actions/upload-pages-artifact@v4
@@ -50,4 +52,3 @@ jobs:
       - name: Publish site
         id: deployment
         uses: actions/deploy-pages@v4
-
