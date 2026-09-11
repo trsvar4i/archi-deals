@@ -13,7 +13,7 @@ export default function Hero() {
           От редких вещей до особенных подарков — я найду, сравню и помогу купить то, что вам нужно, без бесконечного поиска.
         </p>
         <a className="primary-button reveal reveal-delay-3" href="#contact">
-          Найти для меня <ArrowUpRight />
+          Смотреть находки <ArrowUpRight />
         </a>
       </div>
 
