@@ -13,7 +13,7 @@ export default function About() {
         <h2>Шопинг снова должен<br /><em>приносить радость.</em></h2>
         <p className="large-copy">Archi Deals — это персональный шопинг с вниманием, заботой и умением находить лучшее предложение.</p>
         <p>Никаких десятков вкладок и сомнений. Только живой человек, который поможет разобраться в вариантах и найти то, что подходит именно вам.</p>
-        <a className="text-link" href="#contact">Давайте найдём что-то особенное <ArrowUpRight /></a>
+        <a className="text-link" href="#contact">Больше находок в Telegram <ArrowUpRight /></a>
       </div>
     </section>
   );
