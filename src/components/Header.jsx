@@ -38,7 +38,7 @@ export default function Header() {
         <a href="#process" onClick={closeMenu}>Как это работает</a>
         <a href="#about" onClick={closeMenu}>Обо мне</a>
         <a className="nav-cta" href="#contact" onClick={closeMenu}>
-          Оставить заявку <ArrowUpRight />
+          Telegram-канал <ArrowUpRight />
         </a>
       </nav>
     </header>
