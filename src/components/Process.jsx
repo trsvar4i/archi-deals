@@ -1,10 +1,10 @@
 import { Arrow } from "./Icons";
 
 const steps = [
-  ["01", "Tell me what you want", "Send a link, screenshot, mood, or simply an idea."],
-  ["02", "I find the best deal", "I compare options, availability, and the details that matter."],
-  ["03", "You approve", "You get a clear quote before anything is purchased."],
-  ["04", "It comes to you", "Your find is secured, prepared, and sent your way."],
+  ["01", "Расскажите, что ищете", "Пришлите ссылку, скриншот, пример или просто опишите идею."],
+  ["02", "Я найду лучший вариант", "Сравню предложения, наличие, цену и важные для вас детали."],
+  ["03", "Вы подтверждаете", "До покупки вы получите понятный расчёт без сюрпризов."],
+  ["04", "Заказ едет к вам", "Я выкуплю находку, подготовлю её и организую доставку."],
 ];
 
 export default function Process() {
@@ -12,8 +12,8 @@ export default function Process() {
     <section className="process" id="process">
       <div className="process-inner section-shell">
         <div className="process-heading">
-          <p className="eyebrow">Simple by design</p>
-          <h2>From “I want it”<br />to <em>“it’s mine.”</em></h2>
+          <p className="eyebrow">Всё очень просто</p>
+          <h2>От «я это хочу»<br />до <em>«это моё».</em></h2>
           <Arrow className="process-arrow" />
         </div>
         <div className="steps">
