@@ -1,9 +1,9 @@
 export default function Ticker() {
   return (
-    <section className="ticker" aria-label="Archi Deals services">
+    <section className="ticker" aria-label="Услуги Archi Deals">
       <div className="ticker-track">
-        <span>Smart sourcing</span><i>✦</i><span>Personal attention</span><i>✦</i><span>Better finds</span><i>✦</i><span>Global shopping</span><i>✦</i>
-        <span>Smart sourcing</span><i>✦</i><span>Personal attention</span><i>✦</i><span>Better finds</span><i>✦</i><span>Global shopping</span><i>✦</i>
+        <span>Умный поиск</span><i>✦</i><span>Личный подход</span><i>✦</i><span>Лучшие находки</span><i>✦</i><span>Шопинг по всему миру</span><i>✦</i>
+        <span>Умный поиск</span><i>✦</i><span>Личный подход</span><i>✦</i><span>Лучшие находки</span><i>✦</i><span>Шопинг по всему миру</span><i>✦</i>
       </div>
     </section>
   );
