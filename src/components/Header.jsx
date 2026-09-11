@@ -16,7 +16,7 @@ export default function Header() {
 
   return (
     <header className={scrolled ? "site-header is-scrolled" : "site-header"}>
-      <a className="wordmark" href="#top" aria-label="Archi Deals home">
+      <a className="wordmark" href="#top" aria-label="Archi Deals — на главную">
         <span>ARCHI</span>
         <small>DEALS</small>
       </a>
@@ -26,7 +26,7 @@ export default function Header() {
         type="button"
         aria-expanded={menuOpen}
         aria-controls="main-navigation"
-        aria-label="Toggle navigation"
+        aria-label="Открыть меню"
         onClick={() => setMenuOpen((current) => !current)}
       >
         <span />
@@ -34,11 +34,11 @@ export default function Header() {
       </button>
 
       <nav id="main-navigation" className={menuOpen ? "nav is-open" : "nav"}>
-        <a href="#services" onClick={closeMenu}>Services</a>
-        <a href="#process" onClick={closeMenu}>How it works</a>
-        <a href="#about" onClick={closeMenu}>About</a>
+        <a href="#services" onClick={closeMenu}>Услуги</a>
+        <a href="#process" onClick={closeMenu}>Как это работает</a>
+        <a href="#about" onClick={closeMenu}>Обо мне</a>
         <a className="nav-cta" href="#contact" onClick={closeMenu}>
-          Start a request <ArrowUpRight />
+          Оставить заявку <ArrowUpRight />
         </a>
       </nav>
     </header>
