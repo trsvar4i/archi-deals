@@ -21,7 +21,7 @@ export default function Categories() {
             <div className="category-image-wrap">
               <img src={category.image} alt={`Персональный шопинг: ${category.title}`} />
               <span className="category-number">{category.number}</span>
-              <a href="#contact" aria-label={`Оставить заявку: ${category.title}`}><ArrowUpRight /></a>
+              <a href="#contact" aria-label={`Смотреть находки: ${category.title}`}><ArrowUpRight /></a>
             </div>
             <h3>{category.title}</h3>
             <p>{category.note}</p>
