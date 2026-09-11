@@ -4,35 +4,35 @@ export default function Hero() {
   return (
     <section className="hero section-shell">
       <div className="hero-copy">
-        <p className="eyebrow reveal">Personal shopping · Curated for you</p>
+        <p className="eyebrow reveal">Персональный шопинг · Специально для вас</p>
         <h1 className="reveal reveal-delay-1">
-          Your shortcut<br />
-          to the <em>right</em> find.
+          Короткий путь<br />
+          к <em>идеальной</em> находке.
         </h1>
         <p className="hero-intro reveal reveal-delay-2">
-          From sold-out fashion to thoughtful gifts, I search, compare, and secure the pieces you want—without the endless scrolling.
+          От редких вещей до особенных подарков — я найду, сравню и помогу купить то, что вам нужно, без бесконечного поиска.
         </p>
         <a className="primary-button reveal reveal-delay-3" href="#contact">
-          Find it for me <ArrowUpRight />
+          Найти для меня <ArrowUpRight />
         </a>
       </div>
 
-      <div className="hero-visual reveal reveal-delay-2" aria-label="Curated fashion selection">
+      <div className="hero-visual reveal reveal-delay-2" aria-label="Персональная подборка товаров">
         <div className="hero-photo" />
         <div className="floating-note note-top">
-          <span>Handpicked</span>
-          <strong>Just for you</strong>
+          <span>Отобрано вручную</span>
+          <strong>Только для вас</strong>
         </div>
         <div className="floating-note note-bottom">
-          <span>One request</span>
-          <strong>Better options</strong>
+          <span>Один запрос</span>
+          <strong>Лучшие варианты</strong>
         </div>
         <span className="orbit orbit-one" />
         <span className="orbit orbit-two" />
       </div>
 
       <Arrow className="hero-arrow" />
-      <p className="scroll-note">Scroll to discover <span>↓</span></p>
+      <p className="scroll-note">Листайте дальше <span>↓</span></p>
     </section>
   );
 }
