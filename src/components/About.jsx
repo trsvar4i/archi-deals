@@ -6,14 +6,14 @@ export default function About() {
       <div className="about-collage" aria-hidden="true">
         <div className="about-photo photo-main" />
         <div className="about-photo photo-small" />
-        <div className="seal"><span>PERSONAL · THOUGHTFUL · EASY ·</span><strong>AD</strong></div>
+        <div className="seal"><span>ЛИЧНО · ПРОДУМАННО · ЛЕГКО ·</span><strong>AD</strong></div>
       </div>
       <div className="about-copy">
-        <p className="eyebrow">Your personal buyer</p>
-        <h2>Shopping should feel<br /><em>exciting again.</em></h2>
-        <p className="large-copy">Archi Deals is personal shopping with curiosity, care, and a sharp eye for value.</p>
-        <p>No crowded tabs. No second-guessing. Just one real person helping you navigate choices and find what feels right for you.</p>
-        <a className="text-link" href="#contact">Let’s find something good <ArrowUpRight /></a>
+        <p className="eyebrow">Ваш персональный байер</p>
+        <h2>Шопинг снова должен<br /><em>приносить радость.</em></h2>
+        <p className="large-copy">Archi Deals — это персональный шопинг с вниманием, заботой и умением находить лучшее предложение.</p>
+        <p>Никаких десятков вкладок и сомнений. Только живой человек, который поможет разобраться в вариантах и найти то, что подходит именно вам.</p>
+        <a className="text-link" href="#contact">Давайте найдём что-то особенное <ArrowUpRight /></a>
       </div>
     </section>
   );
