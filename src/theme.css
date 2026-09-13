@@ -214,9 +214,10 @@ h2 em {
 .ticker-group {
   display: flex;
   align-items: center;
-  justify-content: space-around;
-  min-width: 100vw;
+  justify-content: flex-start;
+  gap: clamp(12px, 1.4vw, 24px);
   flex: 0 0 auto;
+  padding-right: clamp(12px, 1.4vw, 24px);
 }
 .ticker .ticker-item {
   display: flex;
@@ -225,11 +226,15 @@ h2 em {
   padding: 0;
 }
 .ticker .ticker-item > span {
-  padding: 0 30px;
+  padding: 0 clamp(10px, 1vw, 18px);
   font: 23px var(--serif);
   white-space: nowrap;
 }
-.ticker .ticker-item > i { margin-right: 4px; }
+.ticker .ticker-item > i {
+  color: var(--blue);
+  font-size: 20px;
+  line-height: 1;
+}
 @keyframes seamless-ticker {
   to { transform: translate3d(-50%, 0, 0); }
 }
@@ -428,7 +433,8 @@ h2 em {
   .hero-visual { height: 420px; }
   .floating-note { min-width: 125px; border-radius: 14px; }
   .ticker { width: calc(100% - 20px); }
-  .ticker .ticker-item > span { padding-inline: 22px; font-size: 20px; }
+  .ticker .ticker-item > span { padding-inline: 9px; font-size: 20px; }
+  .ticker .ticker-item > i { font-size: 17px; }
   .ticker-track { animation-duration: 18s; }
   .fresh-finds { padding-block: 88px 10px; }
   .finds-heading { display: block; margin-bottom: 30px; }
