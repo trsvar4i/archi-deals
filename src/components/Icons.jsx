@@ -13,6 +13,12 @@ export const InstagramIcon = () => (
   </svg>
 );
 
+export const TelegramIcon = () => (
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M21.4 3.4 18.2 19c-.2 1.1-.9 1.4-1.8.9l-4.8-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.3-4.8 8.8-7.9c.4-.3-.1-.5-.6-.2L5.9 13l-4.7-1.5c-1-.3-1-1 .2-1.5l18.4-7.1c.9-.3 1.7.2 1.4 1.2l.2-.7Z" />
+  </svg>
+);
+
 export const ArrowUpRight = () => (
   <svg viewBox="0 0 24 24" aria-hidden="true">
     <path d="M7 17 17 7M8 7h9v9" />
