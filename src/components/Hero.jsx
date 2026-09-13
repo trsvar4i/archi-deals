@@ -12,8 +12,8 @@ export default function Hero() {
         <p className="hero-intro reveal reveal-delay-2">
           От редких вещей до особенных подарков — я найду, сравню и помогу купить то, что вам нужно, без бесконечного поиска.
         </p>
-        <a className="primary-button reveal reveal-delay-3" href="#contact">
-          Смотреть находки <ArrowUpRight />
+        <a className="primary-button reveal reveal-delay-3" href="#finds">
+          Перейти к находкам <ArrowUpRight />
         </a>
       </div>
 
