@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Italiana&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Geologica:wght@300;400;500;600&family=Italiana&family=Unbounded:wght@400;500;600&display=swap");
 
 :root {
   --ink: #111111;
@@ -7,8 +7,10 @@
   --blue: #8ed4ed;
   --blue-dark: #5db9dc;
   --line: rgba(17, 17, 17, 0.16);
-  --serif: "Italiana", "Times New Roman", serif;
-  --sans: "DM Sans", Arial, sans-serif;
+  --serif: "Geologica", Arial, sans-serif;
+  --sans: "Geologica", Arial, sans-serif;
+  --accent: "Unbounded", Arial, sans-serif;
+  --logo: "Italiana", "Times New Roman", serif;
 }
 
 * { box-sizing: border-box; }
@@ -61,7 +63,7 @@ button, input, textarea { font: inherit; }
   line-height: .8;
 }
 
-.wordmark span { font: 30px/1 var(--serif); letter-spacing: .04em; }
+.wordmark span { font: 30px/1 var(--logo); letter-spacing: .04em; }
 .wordmark small { margin-top: 5px; color: var(--blue-dark); font-size: 9px; letter-spacing: .55em; transform: translateX(3px); }
 .wordmark::after {
   content: "";
@@ -190,7 +192,7 @@ h2 { font-size: clamp(50px, 5.8vw, 84px); line-height: .98; }
 .photo-small { right: 0; bottom: 0; width: 44%; height: 47%; border: 12px solid var(--paper); background-image: url("https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=800&q=85"); }
 .seal { position: absolute; right: 3%; top: 7%; width: 145px; aspect-ratio: 1; display: grid; place-items: center; border-radius: 50%; color: var(--ink); background: var(--blue); transform: rotate(8deg); }
 .seal span { position: absolute; width: 88%; height: 88%; font-size: 8px; letter-spacing: .24em; text-align: center; padding-top: 5px; }
-.seal strong { font: 45px var(--serif); font-weight: 400; }
+.seal strong { font: 45px var(--logo); font-weight: 400; }
 .about-copy { max-width: 550px; }
 .about-copy .large-copy { margin: 36px 0 18px; color: var(--ink) !important; font: 25px/1.45 var(--serif) !important; }
 .text-link { display: inline-flex; align-items: center; gap: 12px; margin-top: 24px; padding-bottom: 6px; border-bottom: 1px solid; font-size: 13px; font-weight: 600; }
@@ -208,7 +210,7 @@ h2 { font-size: clamp(50px, 5.8vw, 84px); line-height: .98; }
 
 .footer { display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: center; padding-block: 80px 28px; }
 .footer-brand { position: relative; width: 165px; display: grid; place-items: center; }
-.footer-brand span { font: 52px var(--serif); }
+.footer-brand span { font: 52px var(--logo); }
 .footer-brand small { color: var(--blue-dark); letter-spacing: .55em; font-size: 10px; transform: translateX(3px); }
 .footer-brand svg { position: absolute; width: 185px; top: 36px; fill: none; stroke: var(--blue); stroke-width: 7; }
 .footer > p { color: #777772; font: 18px var(--serif); text-align: center; }
