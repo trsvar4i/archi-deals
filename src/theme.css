@@ -161,9 +161,15 @@ main,
 h1 { font-size: clamp(60px, 6.8vw, 106px); line-height: 0.92; }
 h1 em,
 h2 em {
+  font-family: var(--accent);
+  font-style: normal;
+  font-weight: 500;
+  letter-spacing: -0.065em;
   color: var(--blue-dark);
   text-shadow: 0 0 30px rgba(142, 212, 237, 0.15);
 }
+.hero h1 em { font-size: 0.72em; }
+h2 em { font-size: 0.76em; }
 .hero-intro,
 .section-heading > p:last-child,
 .about-copy > p:not(.eyebrow),
