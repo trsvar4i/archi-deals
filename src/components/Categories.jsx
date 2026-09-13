@@ -1,5 +1,3 @@
-import { ArrowUpRight } from "./Icons";
-
 const categories = [
   { number: "01", title: "Мода", note: "Находки для гардероба и лимитированные вещи", image: "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=1000&q=85" },
   { number: "02", title: "Красота", note: "Культовые средства и новые открытия", image: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=1000&q=85" },
@@ -21,7 +19,6 @@ export default function Categories() {
             <div className="category-image-wrap">
               <img src={category.image} alt={`Персональный шопинг: ${category.title}`} />
               <span className="category-number">{category.number}</span>
-              <a href="#contact" aria-label={`Смотреть находки: ${category.title}`}><ArrowUpRight /></a>
             </div>
             <h3>{category.title}</h3>
             <p>{category.note}</p>
