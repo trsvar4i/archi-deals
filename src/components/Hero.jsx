@@ -32,7 +32,6 @@ export default function Hero() {
       </div>
 
       <Arrow className="hero-arrow" />
-      <p className="scroll-note">Листайте дальше <span>↓</span></p>
     </section>
   );
 }
