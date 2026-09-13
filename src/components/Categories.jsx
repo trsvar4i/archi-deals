@@ -9,7 +9,7 @@ export default function Categories() {
     <section className="services section-shell" id="services">
       <div className="section-heading">
         <p className="eyebrow">Что я могу найти?</p>
-        <h2>Лучшие вещи —<br /><em>без долгих поисков.</em></h2>
+        <h2>Вы выбираете —<br /><em>мы находим.</em></h2>
         <p>Я стану вашими глазами, вкусом и помощником. Если вещь можно найти, я помогу сделать её вашей.</p>
       </div>
 
