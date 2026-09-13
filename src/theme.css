@@ -215,9 +215,9 @@ h2 em {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: clamp(12px, 1.4vw, 24px);
+  gap: clamp(7px, 0.7vw, 12px);
   flex: 0 0 auto;
-  padding-right: clamp(12px, 1.4vw, 24px);
+  padding-right: clamp(7px, 0.7vw, 12px);
 }
 .ticker .ticker-item {
   display: flex;
@@ -226,7 +226,7 @@ h2 em {
   padding: 0;
 }
 .ticker .ticker-item > span {
-  padding: 0 clamp(10px, 1vw, 18px);
+  padding: 0 clamp(5px, 0.55vw, 9px) 0 0;
   font: 23px var(--serif);
   white-space: nowrap;
 }
@@ -433,7 +433,7 @@ h2 em {
   .hero-visual { height: 420px; }
   .floating-note { min-width: 125px; border-radius: 14px; }
   .ticker { width: calc(100% - 20px); }
-  .ticker .ticker-item > span { padding-inline: 9px; font-size: 20px; }
+  .ticker .ticker-item > span { padding: 0 5px 0 0; font-size: 20px; }
   .ticker .ticker-item > i { font-size: 17px; }
   .ticker-track { animation-duration: 18s; }
   .fresh-finds { padding-block: 88px 10px; }
