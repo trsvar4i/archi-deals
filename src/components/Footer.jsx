@@ -1,4 +1,4 @@
-import { Arrow, InstagramIcon } from "./Icons";
+import { Arrow, InstagramIcon, TelegramIcon } from "./Icons";
 
 export default function Footer() {
   return (
@@ -6,6 +6,7 @@ export default function Footer() {
       <a className="footer-brand" href="#top"><span>ARCHI</span><Arrow /><small>DEALS</small></a>
       <p>Персональный шопинг с вниманием к деталям.</p>
       <div className="footer-links">
+        <a href="https://t.me/archi_deals" target="_blank" rel="noreferrer" aria-label="Telegram-канал Archi Deals"><TelegramIcon /> Telegram</a>
         <a href="https://instagram.com/archi_deals" target="_blank" rel="noreferrer" aria-label="Archi Deals в Instagram"><InstagramIcon /> Instagram</a>
         <a href="#top">Наверх ↑</a>
       </div>
