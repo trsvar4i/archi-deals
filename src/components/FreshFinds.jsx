@@ -1,4 +1,5 @@
 import { ArrowUpRight } from "./Icons";
+import { finds } from "../data/finds";
 
 export default function FreshFinds() {
   return (
@@ -8,24 +9,27 @@ export default function FreshFinds() {
           <p className="eyebrow">Новая витрина</p>
           <h2>Свежие<br /><em>находки.</em></h2>
         </div>
-        <p>Здесь скоро появятся первые товары, цены и подборки от Archi Deals.</p>
+        <p>Будущая витрина уже собрана по направлениям. Реальные товары и цены появятся здесь без переделки сайта.</p>
       </div>
 
-      <div className="finds-placeholder">
-        <div className="finds-orb finds-orb-one" />
-        <div className="finds-orb finds-orb-two" />
-        <div className="placeholder-copy">
-          <span>Скоро</span>
-          <h3>Собираем первую подборку</h3>
-          <p>А пока все актуальные находки уже ждут вас в Telegram-канале.</p>
-          <a href="https://t.me/archi_deals" target="_blank" rel="noreferrer">
-            Открыть канал <ArrowUpRight />
-          </a>
-        </div>
-        <div className="placeholder-cards" aria-hidden="true">
-          <span /><span /><span />
-        </div>
+      <div className="finds-grid">
+        {finds.map((find) => (
+          <article className="find-card" key={find.id}>
+            <div className="find-card-image">
+              <img src={find.image} alt={find.title} loading="lazy" />
+              <span>{find.label}</span>
+            </div>
+            <div className="find-card-copy">
+              <p>{find.note}</p>
+              <h3>{find.title}</h3>
+            </div>
+          </article>
+        ))}
       </div>
+
+      <a className="finds-channel-link" href="https://t.me/archi_deals" target="_blank" rel="noreferrer">
+        Актуальные находки уже выходят в Telegram <ArrowUpRight />
+      </a>
     </section>
   );
 }
