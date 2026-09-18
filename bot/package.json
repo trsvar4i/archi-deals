@@ -1,0 +1,18 @@
+{
+  "name": "archi-deals-telegram-bot",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "db:local": "wrangler d1 execute archi-deals-bot --local --file=./schema.sql",
+    "db:remote": "wrangler d1 execute archi-deals-bot --remote --file=./schema.sql",
+    "webhook": "node scripts/register-webhook.mjs",
+    "check": "node --check src/index.js && node --check scripts/register-webhook.mjs"
+  },
+  "devDependencies": {
+    "wrangler": "^4.40.0"
+  }
+}
+
