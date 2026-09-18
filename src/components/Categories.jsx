@@ -8,16 +8,16 @@ export default function Categories() {
   return (
     <section className="services section-shell" id="services">
       <div className="section-heading">
-        <p className="eyebrow">Что я могу найти?</p>
-        <h2>Вы выбираете —<br /><em>мы находим.</em></h2>
-        <p>Я стану вашими глазами, вкусом и помощником. Если вещь можно найти, я помогу сделать её вашей.</p>
+        <p className="eyebrow">Что можно найти</p>
+        <h2>От идеи —<br /><em>к точной находке.</em></h2>
+        <p>Поиск по разным странам и площадкам, сравнение вариантов и помощь на каждом этапе покупки.</p>
       </div>
 
       <div className="category-grid">
         {categories.map((category) => (
           <article className="category-card" key={category.title}>
             <div className="category-image-wrap">
-              <img src={category.image} alt={`Персональный шопинг: ${category.title}`} />
+              <img src={category.image} alt={`Персональный шопинг: ${category.title}`} loading="lazy" />
               <span className="category-number">{category.number}</span>
             </div>
             <h3>{category.title}</h3>
