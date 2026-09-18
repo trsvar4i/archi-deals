@@ -49,8 +49,8 @@ export default function Header() {
             <a href="#services">Услуги</a>
             <a href="#process">Как это работает</a>
             <a href="#about">Обо мне</a>
-            <a className="nav-cta" href="#contact">
-              Telegram-канал <ArrowUpRight />
+            <a className="nav-cta" href="#order">
+              Оформить запрос <ArrowUpRight />
             </a>
           </nav>
 
@@ -98,6 +98,8 @@ export default function Header() {
           <a href="#services" onClick={closeMenu}><span>01</span>Услуги</a>
           <a href="#process" onClick={closeMenu}><span>02</span>Как это работает</a>
           <a href="#about" onClick={closeMenu}><span>03</span>Обо мне</a>
+          <a href="#faq" onClick={closeMenu}><span>04</span>Вопросы</a>
+          <a href="#order" onClick={closeMenu}><span>05</span>Оформить запрос</a>
         </nav>
 
         <div className="mobile-socials">
