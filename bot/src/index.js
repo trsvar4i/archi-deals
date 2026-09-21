@@ -1,4 +1,10 @@
 const STEPS = ["item", "reference", "details", "budget", "city", "comment"];
+const WEB_APP_URL = "https://trsvar4i.github.io/archi-deals/?app=order";
+const CORS_HEADERS = {
+  "Access-Control-Allow-Origin": "https://trsvar4i.github.io",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type",
+};
 
 const PROMPTS = {
   item: {
@@ -37,8 +43,46 @@ export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
+    if (request.method === "OPTIONS" && url.pathname === "/api/orders") {
+      return new Response(null, { status: 204, headers: CORS_HEADERS });
+    }
+
     if (request.method === "GET" && url.pathname === "/health") {
       return Response.json({ ok: true, service: "archi-deals-bot" });
+    }
+
+    if (request.method === "POST" && url.pathname === "/register-webhook") {
+      const authorization = request.headers.get("Authorization");
+      if (authorization !== `Bearer ${env.WEBHOOK_SECRET}`) {
+        return new Response("Forbidden", { status: 403 });
+      }
+
+      const webhookUrl = `${url.origin}/webhook`;
+      const result = await telegram(env, "setWebhook", {
+        url: webhookUrl,
+        ip_address: "188.114.97.11",
+        secret_token: env.WEBHOOK_SECRET,
+        drop_pending_updates: true,
+      });
+
+      await telegram(env, "setChatMenuButton", {
+        menu_button: {
+          type: "web_app",
+          text: "Оформить заказ",
+          web_app: { url: WEB_APP_URL },
+        },
+      });
+
+      return Response.json({ ok: true, result, webhookUrl });
+    }
+
+    if (request.method === "POST" && url.pathname === "/api/orders") {
+      try {
+        return await handleWebAppOrder(request, env);
+      } catch (error) {
+        console.error("Web app order failed", error);
+        return jsonWithCors({ ok: false, error: error.message || "Не удалось отправить заявку" }, 400);
+      }
     }
 
     if (request.method !== "POST" || url.pathname !== "/webhook") {
@@ -62,6 +106,127 @@ export default {
   },
 };
 
+async function handleWebAppOrder(request, env) {
+  const form = await request.formData();
+  const initData = String(form.get("initData") || "");
+  const user = await validateTelegramInitData(initData, env.BOT_TOKEN);
+  const order = JSON.parse(String(form.get("order") || "{}"));
+  const reference = form.get("reference");
+
+  const item = cleanText(order.item, 500);
+  const city = cleanText(order.city, 120);
+  if (item.length < 3 || city.length < 2) throw new Error("Заполните запрос и город доставки.");
+
+  if (reference instanceof File && reference.size > 8 * 1024 * 1024) {
+    throw new Error("Фотография должна быть меньше 8 МБ.");
+  }
+
+  const normalized = {
+    item,
+    category: cleanText(order.category, 80),
+    details: cleanText(order.details, 400),
+    budget: cleanText(order.budget, 120),
+    city,
+    referenceUrl: cleanText(order.referenceUrl, 500),
+    comment: cleanText(order.comment, 400),
+  };
+
+  const orderId = `AD-${Date.now().toString().slice(-6)}`;
+  const customer = [user.first_name, user.last_name].filter(Boolean).join(" ");
+  const username = user.username ? `@${escapeHtml(user.username)}` : "не указан";
+
+  if (reference instanceof File && reference.size > 0) {
+    const photoForm = new FormData();
+    photoForm.set("chat_id", env.ADMIN_CHAT_ID);
+    photoForm.set("caption", `Референс к заявке ${orderId}`);
+    photoForm.set("photo", reference, reference.name || "reference.jpg");
+    await telegramMultipart(env, "sendPhoto", photoForm);
+  }
+
+  const text = [
+    `<b>Новая заявка ${orderId}</b> · Mini App`,
+    "",
+    `<b>Клиент:</b> ${escapeHtml(customer || "Без имени")}`,
+    `<b>Username:</b> ${username}`,
+    `<b>Telegram ID:</b> <code>${user.id}</code>`,
+    "",
+    `<b>Что найти:</b> ${formatValue(normalized.item)}`,
+    `<b>Категория:</b> ${formatValue(normalized.category)}`,
+    `<b>Детали:</b> ${formatValue(normalized.details)}`,
+    `<b>Бюджет:</b> ${formatValue(normalized.budget)}`,
+    `<b>Город:</b> ${formatValue(normalized.city)}`,
+    `<b>Ссылка:</b> ${formatValue(normalized.referenceUrl)}`,
+    `<b>Комментарий:</b> ${formatValue(normalized.comment)}`,
+  ].join("\n");
+
+  await sendMessage(env, env.ADMIN_CHAT_ID, text, adminStatusKeyboard(user.id));
+  await sendMessage(
+    env,
+    user.id,
+    `Заявка <b>${orderId}</b> отправлена ✓\nЯ сообщу здесь, когда Archi Deals возьмёт её в работу.`,
+    startKeyboard(),
+  );
+
+  return jsonWithCors({ ok: true, orderId });
+}
+
+async function validateTelegramInitData(initData, botToken) {
+  if (!initData) throw new Error("Откройте форму через Telegram-бота.");
+
+  const params = new URLSearchParams(initData);
+  const receivedHash = params.get("hash") || "";
+  params.delete("hash");
+  params.delete("signature");
+
+  const authDate = Number(params.get("auth_date"));
+  if (!authDate || Date.now() / 1000 - authDate > 86400) {
+    throw new Error("Сессия Telegram устарела. Откройте форму заново.");
+  }
+
+  const dataCheckString = [...params.entries()]
+    .sort(([left], [right]) => left.localeCompare(right))
+    .map(([key, value]) => `${key}=${value}`)
+    .join("\n");
+
+  const secretKey = await hmacSha256(new TextEncoder().encode("WebAppData"), botToken);
+  const calculatedHash = bytesToHex(await hmacSha256(secretKey, dataCheckString));
+  if (!safeEqual(calculatedHash, receivedHash)) throw new Error("Не удалось подтвердить сессию Telegram.");
+
+  const user = JSON.parse(params.get("user") || "null");
+  if (!user?.id) throw new Error("Telegram не передал данные пользователя.");
+  return user;
+}
+
+async function hmacSha256(key, value) {
+  const cryptoKey = await crypto.subtle.importKey(
+    "raw",
+    typeof key === "string" ? new TextEncoder().encode(key) : key,
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"],
+  );
+  return new Uint8Array(await crypto.subtle.sign("HMAC", cryptoKey, new TextEncoder().encode(value)));
+}
+
+function bytesToHex(bytes) {
+  return [...bytes].map((byte) => byte.toString(16).padStart(2, "0")).join("");
+}
+
+function safeEqual(left, right) {
+  if (left.length !== right.length) return false;
+  let result = 0;
+  for (let index = 0; index < left.length; index += 1) result |= left.charCodeAt(index) ^ right.charCodeAt(index);
+  return result === 0;
+}
+
+function cleanText(value, maxLength) {
+  return typeof value === "string" ? value.trim().slice(0, maxLength) : "";
+}
+
+function jsonWithCors(payload, status = 200) {
+  return Response.json(payload, { status, headers: CORS_HEADERS });
+}
+
 async function handleUpdate(update, env) {
   if (update.callback_query) {
     await handleCallback(update.callback_query, env);
@@ -74,7 +239,13 @@ async function handleUpdate(update, env) {
   const text = message.text?.trim() || "";
 
   if (text.startsWith("/start")) {
-    await startOrder(message.chat.id, message.from.id, env);
+    await deleteSession(message.from.id, env);
+    await sendMessage(
+      env,
+      message.chat.id,
+      "<b>Archi Deals</b>\n\nНайдём нужную вещь, сравним варианты и поможем с покупкой. Быстрее всего оформить заказ в мини-приложении.",
+      startKeyboard(),
+    );
     return;
   }
 
@@ -261,17 +432,7 @@ async function forwardOrder(user, session, env) {
     `<b>Комментарий:</b> ${formatValue(data.comment)}`,
   ].join("\n");
 
-  const options = {
-    reply_markup: {
-      inline_keyboard: [
-        [{ text: "Принять", callback_data: `admin:accepted:${user.id}` }],
-        [
-          { text: "Уточнить", callback_data: `admin:clarify:${user.id}` },
-          { text: "Завершить", callback_data: `admin:completed:${user.id}` },
-        ],
-      ],
-    },
-  };
+  const options = adminStatusKeyboard(user.id);
 
   if (data.reference?.type === "photo") {
     await telegram(env, "sendPhoto", {
@@ -325,6 +486,20 @@ async function telegram(env, method, payload) {
   return result.result;
 }
 
+async function telegramMultipart(env, method, body) {
+  const response = await fetch(`https://api.telegram.org/bot${env.BOT_TOKEN}/${method}`, {
+    method: "POST",
+    body,
+  });
+  const result = await response.json();
+
+  if (!response.ok || !result.ok) {
+    throw new Error(`${method}: ${result.description || response.statusText}`);
+  }
+
+  return result.result;
+}
+
 function sendMessage(env, chatId, text, options = {}) {
   return telegram(env, "sendMessage", {
     chat_id: chatId,
@@ -338,7 +513,24 @@ function sendMessage(env, chatId, text, options = {}) {
 function startKeyboard() {
   return {
     reply_markup: {
-      inline_keyboard: [[{ text: "Начать новую заявку", callback_data: "order:start" }]],
+      inline_keyboard: [
+        [{ text: "Оформить заказ", web_app: { url: WEB_APP_URL } }],
+        [{ text: "Заполнить в чате", callback_data: "order:start" }],
+      ],
+    },
+  };
+}
+
+function adminStatusKeyboard(customerId) {
+  return {
+    reply_markup: {
+      inline_keyboard: [
+        [{ text: "Принять", callback_data: `admin:accepted:${customerId}` }],
+        [
+          { text: "Уточнить", callback_data: `admin:clarify:${customerId}` },
+          { text: "Завершить", callback_data: `admin:completed:${customerId}` },
+        ],
+      ],
     },
   };
 }
@@ -400,4 +592,3 @@ function escapeHtml(value) {
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;");
 }
-
