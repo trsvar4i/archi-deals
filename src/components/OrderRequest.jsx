@@ -1,59 +1,29 @@
-import { useState } from "react";
-
-const initialForm = { item: "", budget: "", link: "" };
+import { ArrowUpRight } from "./Icons";
 
 export default function OrderRequest() {
-  const [form, setForm] = useState(initialForm);
-  const [copied, setCopied] = useState(false);
-
-  const updateField = (event) => {
-    setForm((current) => ({ ...current, [event.target.name]: event.target.value }));
-    setCopied(false);
-  };
-
-  const requestText = [
-    "Заявка Archi Deals",
-    `Что найти: ${form.item || "—"}`,
-    `Бюджет: ${form.budget || "—"}`,
-    `Ссылка или пример: ${form.link || "—"}`,
-  ].join("\n");
-
-  const copyRequest = async () => {
-    if (!form.item.trim()) return;
-    await navigator.clipboard.writeText(requestText);
-    setCopied(true);
-  };
-
   return (
     <section className="order-request section-shell" id="order">
       <div className="order-copy">
         <p className="eyebrow">Заявка в Telegram</p>
-        <h2>Три строки —<br /><em>и поиск начат.</em></h2>
-        <p>Форма собирает короткое сообщение для заказа. Сейчас текст можно скопировать и отправить в личный аккаунт; после запуска бота этот же сценарий станет автоматическим.</p>
-        <div className="bot-status"><span /> Telegram-бот готовится к запуску</div>
+        <h2>Несколько шагов —<br /><em>и поиск начат.</em></h2>
+        <p>Откройте мини-приложение внутри Telegram, расскажите, что нужно найти, добавьте фото или ссылку — заявка сразу попадёт в работу.</p>
+        <div className="bot-status"><span /> Telegram-бот работает</div>
       </div>
 
-      <form className="order-form" onSubmit={(event) => event.preventDefault()}>
-        <label>
-          <span>Что нужно найти *</span>
-          <textarea name="item" value={form.item} onChange={updateField} placeholder="Название, описание, размер, цвет…" rows="3" required />
-        </label>
-        <div className="order-form-row">
-          <label>
-            <span>Бюджет</span>
-            <input name="budget" value={form.budget} onChange={updateField} placeholder="Например, до 150 $" />
-          </label>
-          <label>
-            <span>Ссылка или пример</span>
-            <input name="link" value={form.link} onChange={updateField} placeholder="https://…" inputMode="url" />
-          </label>
-        </div>
-        <button className="order-submit" type="button" onClick={copyRequest} disabled={!form.item.trim()}>
-          {copied ? "Заявка скопирована ✓" : "Скопировать заявку"}
-        </button>
-        <small>{copied ? "Текст готов — осталось вставить его в личный Telegram-чат." : "Данные никуда не отправляются и остаются только в браузере."}</small>
-      </form>
+      <div className="order-form order-launch-card">
+        <span className="order-launch-number">01—04</span>
+        <h3>Заказ — без длинной переписки</h3>
+        <p>Удобная форма запомнит детали, покажет итог и отправит заявку Archi Deals прямо из Telegram.</p>
+        <ul>
+          <li>Что найти и важные детали</li>
+          <li>Бюджет и город доставки</li>
+          <li>Фото или ссылка на пример</li>
+        </ul>
+        <a className="order-submit" href="https://t.me/ArchiDeals_bot?start=order" target="_blank" rel="noreferrer">
+          <span>Открыть мини-приложение</span><ArrowUpRight />
+        </a>
+        <small>Бот откроется в Telegram. Там же будут приходить статусы и найденные варианты.</small>
+      </div>
     </section>
   );
 }
-
