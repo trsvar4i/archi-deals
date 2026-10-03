@@ -176,7 +176,7 @@ async function validateTelegramInitData(initData, botToken) {
   const params = new URLSearchParams(initData);
   const receivedHash = params.get("hash") || "";
   params.delete("hash");
-  params.delete("signature");
+  
 
   const authDate = Number(params.get("auth_date"));
   if (!authDate || Date.now() / 1000 - authDate > 86400) {
