@@ -2,6 +2,7 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "archi-deals-bot",
   "main": "src/index.js",
+  "no_bundle": true,
   "compatibility_date": "2026-09-18",
   "observability": {
     "enabled": true
@@ -17,8 +18,7 @@
     {
       "binding": "DB",
       "database_name": "archi-deals-bot",
-      "database_id": "REPLACE_AFTER_DATABASE_CREATION"
+      "database_id": "ba8d424c-3c2a-412e-9aec-c30a4c857d35"
     }
   ]
 }
-
