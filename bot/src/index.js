@@ -60,7 +60,7 @@ export default {
       const webhookUrl = `${url.origin}/webhook`;
       const result = await telegram(env, "setWebhook", {
         url: webhookUrl,
-        ip_address: "188.114.97.11",
+        
         secret_token: env.WEBHOOK_SECRET,
         drop_pending_updates: true,
       });
