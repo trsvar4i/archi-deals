@@ -1,8 +1,9 @@
-import { Arrow, ArrowUpRight } from "./Icons";
+import { Arrow } from "./Icons";
 
 export default function Hero() {
   return (
     <section className="hero section-shell">
+      <span className="hero-grain" aria-hidden="true" />
       <div className="hero-copy">
         <p className="eyebrow reveal">Персональный шопинг · Точный поиск</p>
         <h1 className="reveal reveal-delay-1">
@@ -13,7 +14,7 @@ export default function Hero() {
           От редких вещей до особенных подарков — поиск, сравнение и помощь с покупкой без десятков вкладок.
         </p>
         <a className="primary-button reveal reveal-delay-3" href="#finds">
-          Перейти к находкам <ArrowUpRight />
+          Смотреть находки
         </a>
       </div>
 

@@ -95,11 +95,11 @@ export default function Header() {
       >
         <p className="mobile-menu-label">Меню</p>
         <nav className="mobile-nav" aria-label="Мобильная навигация">
-          <a href="#services" onClick={closeMenu}><span>01</span>Услуги</a>
-          <a href="#process" onClick={closeMenu}><span>02</span>Как это работает</a>
-          <a href="#about" onClick={closeMenu}><span>03</span>Обо мне</a>
-          <a href="#faq" onClick={closeMenu}><span>04</span>Вопросы</a>
-          <a href="#order" onClick={closeMenu}><span>05</span>Оформить запрос</a>
+          <a href="#services" onClick={closeMenu}>Услуги</a>
+          <a href="#process" onClick={closeMenu}>Как это работает</a>
+          <a href="#about" onClick={closeMenu}>Обо мне</a>
+          <a href="#faq" onClick={closeMenu}>Вопросы</a>
+          <a href="#order" onClick={closeMenu}>Оформить запрос</a>
         </nav>
 
         <div className="mobile-socials">

@@ -5,13 +5,12 @@ export default function OrderRequest() {
     <section className="order-request section-shell" id="order">
       <div className="order-copy">
         <p className="eyebrow">Заявка в Telegram</p>
-        <h2>Несколько шагов —<br /><em>и поиск начат.</em></h2>
-        <p>Откройте мини-приложение внутри Telegram, расскажите, что нужно найти, добавьте фото или ссылку — заявка сразу попадёт в работу.</p>
+        <h2>Вы описываете вещь.<br /><span className="headline-soft">Мы начинаем искать.</span></h2>
+        <p>Можно написать пару слов или подробно описать задачу, добавить фотографию либо ссылку. Всё остальное уточним уже в Telegram.</p>
         <div className="bot-status"><span /> Telegram-бот работает</div>
       </div>
 
       <div className="order-form order-launch-card">
-        <span className="order-launch-number">01—04</span>
         <h3>Заказ — без длинной переписки</h3>
         <p>Удобная форма запомнит детали, покажет итог и отправит заявку Archi Deals прямо из Telegram.</p>
         <ul>

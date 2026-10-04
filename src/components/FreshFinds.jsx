@@ -1,4 +1,3 @@
-import { ArrowUpRight } from "./Icons";
 import { finds } from "../data/finds";
 
 export default function FreshFinds() {
@@ -6,10 +5,9 @@ export default function FreshFinds() {
     <section className="fresh-finds section-shell" id="finds">
       <div className="finds-heading">
         <div>
-          <p className="eyebrow">Новая витрина</p>
-          <h2>Свежие<br /><em>находки.</em></h2>
+          <h2>Свежие находки.<br />Ничего случайного.</h2>
         </div>
-        <p>Будущая витрина уже собрана по направлениям. Реальные товары и цены появятся здесь без переделки сайта.</p>
+        <p>Здесь будут появляться вещи, которые действительно стоят внимания: редкие позиции, удачные цены и небанальные подарки.</p>
       </div>
 
       <div className="finds-grid">
@@ -28,7 +26,7 @@ export default function FreshFinds() {
       </div>
 
       <a className="finds-channel-link" href="https://t.me/archi_deals" target="_blank" rel="noreferrer">
-        Актуальные находки уже выходят в Telegram <ArrowUpRight />
+        Смотреть актуальные находки в Telegram
       </a>
     </section>
   );

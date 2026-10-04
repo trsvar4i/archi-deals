@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { ArrowUpRight } from "./Icons";
 
 const questions = [
   {
@@ -30,10 +29,10 @@ export default function Faq() {
   return (
     <section className="faq section-shell" id="faq">
       <div className="faq-heading">
-        <p className="eyebrow">Коротко о главном</p>
-        <h2>Частые<br /><em>вопросы.</em></h2>
+        <h2>Что стоит знать до первого заказа</h2>
+        <p>Короткие ответы на вопросы, которые обычно возникают перед началом поиска.</p>
         <a href="https://t.me/archi_deals" target="_blank" rel="noreferrer">
-          Больше информации в Telegram <ArrowUpRight />
+          Больше информации в Telegram
         </a>
       </div>
 

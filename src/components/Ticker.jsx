@@ -9,7 +9,7 @@ export default function Ticker() {
           <div className="ticker-group" aria-hidden={group === 1} key={group}>
             {loopItems.map((item, index) => (
               <span className="ticker-item" key={`${item}-${index}`}>
-                <span>{item}</span><i>•</i>
+                <span>{item}</span><i aria-hidden="true" />
               </span>
             ))}
           </div>
