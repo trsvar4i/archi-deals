@@ -16,7 +16,6 @@ const initialOrder = {
   item: "",
   category: "",
   details: "",
-  budget: "",
   city: "",
   referenceUrl: "",
   comment: "",
@@ -175,17 +174,11 @@ export default function TelegramMiniApp() {
         {step === 2 && (
           <div className="tg-screen">
             <p className="tg-kicker">Последние штрихи</p>
-            <h1>Бюджет и<br /><span>доставка.</span></h1>
-            <div className="tg-two-fields">
-              <label className="tg-field">
-                <span>Бюджет</span>
-                <input value={order.budget} onChange={update("budget")} placeholder="Например, до 150 $" />
-              </label>
-              <label className="tg-field">
-                <span>Город *</span>
-                <input value={order.city} onChange={update("city")} placeholder="Куда доставлять?" />
-              </label>
-            </div>
+            <h1>Доставка и<br /><span>референс.</span></h1>
+            <label className="tg-field">
+              <span>Город доставки *</span>
+              <input value={order.city} onChange={update("city")} placeholder="Куда доставлять?" />
+            </label>
             <label className="tg-upload">
               <input type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => setReferenceFile(event.target.files?.[0] || null)} />
               <Upload />
@@ -206,7 +199,7 @@ export default function TelegramMiniApp() {
             <div className="tg-review">
               <button type="button" onClick={() => setStep(0)}><span>Что найти</span><strong>{order.item}</strong><em>Изменить</em></button>
               <button type="button" onClick={() => setStep(1)}><span>Категория и детали</span><strong>{order.category}{order.details ? ` · ${order.details}` : ""}</strong><em>Изменить</em></button>
-              <button type="button" onClick={() => setStep(2)}><span>Бюджет и город</span><strong>{order.budget || "Бюджет не указан"} · {order.city}</strong><em>Изменить</em></button>
+              <button type="button" onClick={() => setStep(2)}><span>Город доставки</span><strong>{order.city}</strong><em>Изменить</em></button>
               {(referenceFile || order.referenceUrl) && <div><span>Референс</span><strong>{referenceFile?.name || order.referenceUrl}</strong></div>}
             </div>
             <label className="tg-field">
