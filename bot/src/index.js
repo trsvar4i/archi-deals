@@ -1,4 +1,4 @@
-const STEPS = ["item", "reference", "details", "budget", "city", "comment"];
+const STEPS = ["item", "reference", "details", "city", "comment"];
 const WEB_APP_URL = "https://trsvar4i.github.io/archi-deals/?app=order";
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "https://trsvar4i.github.io",
@@ -17,10 +17,6 @@ const PROMPTS = {
   },
   details: {
     text: "Какие детали важны: размер, цвет, материал, состояние или бренд?",
-    optional: true,
-  },
-  budget: {
-    text: "Какой ориентировочный бюджет? Можно указать сумму или диапазон.",
     optional: true,
   },
   city: {
@@ -60,7 +56,6 @@ export default {
       const webhookUrl = `${url.origin}/webhook`;
       const result = await telegram(env, "setWebhook", {
         url: webhookUrl,
-        
         secret_token: env.WEBHOOK_SECRET,
         drop_pending_updates: true,
       });
@@ -125,7 +120,6 @@ async function handleWebAppOrder(request, env) {
     item,
     category: cleanText(order.category, 80),
     details: cleanText(order.details, 400),
-    budget: cleanText(order.budget, 120),
     city,
     referenceUrl: cleanText(order.referenceUrl, 500),
     comment: cleanText(order.comment, 400),
@@ -133,7 +127,6 @@ async function handleWebAppOrder(request, env) {
 
   const orderId = `AD-${Date.now().toString().slice(-6)}`;
   const customer = [user.first_name, user.last_name].filter(Boolean).join(" ");
-  const username = user.username ? `@${escapeHtml(user.username)}` : "не указан";
 
   if (reference instanceof File && reference.size > 0) {
     const photoForm = new FormData();
@@ -147,13 +140,12 @@ async function handleWebAppOrder(request, env) {
     `<b>Новая заявка ${orderId}</b> · Mini App`,
     "",
     `<b>Клиент:</b> ${escapeHtml(customer || "Без имени")}`,
-    `<b>Username:</b> ${username}`,
+    `<b>Связаться:</b> ${formatCustomerContact(user)}`,
     `<b>Telegram ID:</b> <code>${user.id}</code>`,
     "",
     `<b>Что найти:</b> ${formatValue(normalized.item)}`,
     `<b>Категория:</b> ${formatValue(normalized.category)}`,
     `<b>Детали:</b> ${formatValue(normalized.details)}`,
-    `<b>Бюджет:</b> ${formatValue(normalized.budget)}`,
     `<b>Город:</b> ${formatValue(normalized.city)}`,
     `<b>Ссылка:</b> ${formatValue(normalized.referenceUrl)}`,
     `<b>Комментарий:</b> ${formatValue(normalized.comment)}`,
@@ -176,7 +168,6 @@ async function validateTelegramInitData(initData, botToken) {
   const params = new URLSearchParams(initData);
   const receivedHash = params.get("hash") || "";
   params.delete("hash");
-  
 
   const authDate = Number(params.get("auth_date"));
   if (!authDate || Date.now() / 1000 - authDate > 86400) {
@@ -394,7 +385,6 @@ async function showSummary(chatId, data, env) {
     `<b>Что найти:</b> ${formatValue(data.item)}`,
     `<b>Фото или ссылка:</b> ${formatReference(data.reference)}`,
     `<b>Детали:</b> ${formatValue(data.details)}`,
-    `<b>Бюджет:</b> ${formatValue(data.budget)}`,
     `<b>Город:</b> ${formatValue(data.city)}`,
     `<b>Комментарий:</b> ${formatValue(data.comment)}`,
   ].join("\n");
@@ -414,20 +404,18 @@ async function showSummary(chatId, data, env) {
 
 async function forwardOrder(user, session, env) {
   const orderId = `AD-${Date.now().toString().slice(-6)}`;
-  const username = user.username ? `@${escapeHtml(user.username)}` : "не указан";
   const customer = [user.first_name, user.last_name].filter(Boolean).join(" ");
   const data = session.data;
   const text = [
     `<b>Новая заявка ${orderId}</b>`,
     "",
     `<b>Клиент:</b> ${escapeHtml(customer || "Без имени")}`,
-    `<b>Username:</b> ${username}`,
+    `<b>Связаться:</b> ${formatCustomerContact(user)}`,
     `<b>Telegram ID:</b> <code>${user.id}</code>`,
     "",
     `<b>Что найти:</b> ${formatValue(data.item)}`,
     `<b>Фото или ссылка:</b> ${formatReference(data.reference)}`,
     `<b>Детали:</b> ${formatValue(data.details)}`,
-    `<b>Бюджет:</b> ${formatValue(data.budget)}`,
     `<b>Город:</b> ${formatValue(data.city)}`,
     `<b>Комментарий:</b> ${formatValue(data.comment)}`,
   ].join("\n");
@@ -525,6 +513,7 @@ function adminStatusKeyboard(customerId) {
   return {
     reply_markup: {
       inline_keyboard: [
+        [{ text: "Открыть профиль клиента", url: `tg://user?id=${customerId}` }],
         [{ text: "Принять", callback_data: `admin:accepted:${customerId}` }],
         [
           { text: "Уточнить", callback_data: `admin:clarify:${customerId}` },
@@ -584,6 +573,13 @@ function formatReference(reference) {
     return reference.caption ? `Фотография · ${escapeHtml(reference.caption)}` : "Фотография";
   }
   return "Не указано";
+}
+
+function formatCustomerContact(user) {
+  const userId = String(user?.id || "").replaceAll(/\D/g, "");
+  if (!userId) return "Профиль недоступен";
+  const label = user.username ? `@${escapeHtml(user.username)}` : "Открыть профиль клиента";
+  return `<a href="tg://user?id=${userId}">${label}</a>`;
 }
 
 function escapeHtml(value) {
