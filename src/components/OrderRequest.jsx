@@ -16,7 +16,7 @@ export default function OrderRequest() {
         <p>Удобная форма запомнит детали, покажет итог и отправит заявку Archi Deals прямо из Telegram.</p>
         <ul>
           <li>Что найти и важные детали</li>
-          <li>Бюджет и город доставки</li>
+          <li>Город доставки</li>
           <li>Фото или ссылка на пример</li>
         </ul>
         <a className="order-submit" href="https://t.me/ArchiDeals_bot?start=order" target="_blank" rel="noreferrer">
