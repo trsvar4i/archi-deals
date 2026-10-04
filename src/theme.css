@@ -91,10 +91,10 @@ body.menu-open { overflow: hidden; }
   position: relative;
   width: 72px;
   height: 38px;
-  padding: 0 9px;
-  display: flex;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   align-items: center;
-  justify-content: space-between;
   flex: 0 0 auto;
   color: var(--ink);
   border: 1px solid var(--line);
@@ -103,7 +103,16 @@ body.menu-open { overflow: hidden; }
   cursor: pointer;
   overflow: hidden;
 }
-.theme-toggle-icon { position: relative; z-index: 2; font-size: 13px; line-height: 1; }
+.theme-toggle-icon {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  font-size: 13px;
+  line-height: 1;
+}
 .theme-toggle-thumb {
   position: absolute;
   z-index: 1;
@@ -116,7 +125,7 @@ body.menu-open { overflow: hidden; }
   box-shadow: 0 4px 14px rgba(28, 44, 80, 0.2);
   transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), background 0.35s ease;
 }
-.theme-toggle[aria-pressed="true"] .theme-toggle-thumb { transform: translateX(35px); }
+.theme-toggle[aria-pressed="true"] .theme-toggle-thumb { transform: translateX(36px); }
 
 .hero {
   isolation: isolate;
@@ -892,9 +901,41 @@ h2 em { font-size: 0.76em; }
   font-weight: 450;
 }
 .faq-item button > span { color: var(--blue-dark); font: 9px var(--accent); }
-.faq-item button i { color: var(--blue-dark); font-size: 25px; font-style: normal; font-weight: 300; text-align: center; transition: transform 0.25s ease; }
+.faq-item button i {
+  color: var(--blue-dark);
+  font-size: 25px;
+  font-style: normal;
+  font-weight: 300;
+  text-align: center;
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
 .faq-item.is-open button i { transform: rotate(45deg); }
+.faq-answer {
+  display: grid;
+  grid-template-rows: 0fr;
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(-8px);
+  transition:
+    grid-template-rows 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.38s ease,
+    transform 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0s linear 0.65s;
+}
+.faq-item.is-open .faq-answer {
+  grid-template-rows: 1fr;
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0s;
+}
+.faq-answer-inner { min-height: 0; overflow: hidden; }
 .faq-answer p { max-width: 620px; margin: -5px 44px 28px 61px; color: var(--muted); font-size: 14px; line-height: 1.75; }
+
+@media (prefers-reduced-motion: reduce) {
+  .faq-answer,
+  .faq-item button i { transition-duration: 0.01ms; }
+}
 
 :where(a, button, input, textarea):focus-visible { outline: 2px solid var(--blue-dark); outline-offset: 4px; }
 
