@@ -1,3 +1,4 @@
+// TODO: заменить Unsplash на реальные фотографии и хранить их локально в src/assets или public.
 export const finds = [
   {
     id: "fashion",
