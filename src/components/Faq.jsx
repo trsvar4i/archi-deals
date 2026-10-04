@@ -53,8 +53,14 @@ export default function Faq() {
                   <i aria-hidden="true">+</i>
                 </button>
               </h3>
-              <div className="faq-answer" id={`faq-answer-${index}`} hidden={!isOpen}>
-                <p>{item.answer}</p>
+              <div
+                className="faq-answer"
+                id={`faq-answer-${index}`}
+                aria-hidden={!isOpen}
+              >
+                <div className="faq-answer-inner">
+                  <p>{item.answer}</p>
+                </div>
               </div>
             </article>
           );
