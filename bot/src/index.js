@@ -127,20 +127,14 @@ async function handleWebAppOrder(request, env) {
 
   const orderId = `AD-${Date.now().toString().slice(-6)}`;
   const customer = [user.first_name, user.last_name].filter(Boolean).join(" ");
-
-  if (reference instanceof File && reference.size > 0) {
-    const photoForm = new FormData();
-    photoForm.set("chat_id", env.ADMIN_CHAT_ID);
-    photoForm.set("caption", `Референс к заявке ${orderId}`);
-    photoForm.set("photo", reference, reference.name || "reference.jpg");
-    await telegramMultipart(env, "sendPhoto", photoForm);
-  }
+  const contact = await getCustomerContact(user.id, env);
+  if (!contact) throw new Error("Сначала поделитесь номером с ботом через команду /start.");
 
   const text = [
     `<b>Новая заявка ${orderId}</b> · Mini App`,
     "",
     `<b>Клиент:</b> ${escapeHtml(customer || "Без имени")}`,
-    `<b>Связаться:</b> ${formatCustomerContact(user)}`,
+    `<b>Связаться:</b> ${formatCustomerContact(user, contact)}`,
     `<b>Telegram ID:</b> <code>${user.id}</code>`,
     "",
     `<b>Что найти:</b> ${formatValue(normalized.item)}`,
@@ -151,7 +145,21 @@ async function handleWebAppOrder(request, env) {
     `<b>Комментарий:</b> ${formatValue(normalized.comment)}`,
   ].join("\n");
 
-  await sendMessage(env, env.ADMIN_CHAT_ID, text, adminStatusKeyboard(user.id));
+  await sendMessage(env, env.ADMIN_CHAT_ID, text, adminStatusKeyboard(user, contact));
+
+  if (reference instanceof File && reference.size > 0) {
+    const photoForm = new FormData();
+    photoForm.set("chat_id", env.ADMIN_CHAT_ID);
+    photoForm.set("caption", `Референс к заявке ${orderId}`);
+    photoForm.set("photo", reference, reference.name || "reference.jpg");
+
+    try {
+      await telegramMultipart(env, "sendPhoto", photoForm);
+    } catch {
+      await sendMessage(env, env.ADMIN_CHAT_ID, `⚠️ Не удалось загрузить референс к заявке <b>${orderId}</b>.`);
+    }
+  }
+
   await sendMessage(
     env,
     user.id,
@@ -229,14 +237,29 @@ async function handleUpdate(update, env) {
 
   const text = message.text?.trim() || "";
 
+  if (message.contact) {
+    if (String(message.contact.user_id || "") !== String(message.from.id)) {
+      await sendMessage(env, message.chat.id, "Пожалуйста, отправьте именно свой номер кнопкой ниже.", contactRequestKeyboard());
+      return;
+    }
+
+    await saveCustomerContact(message.from.id, message.contact, env);
+    await sendMessage(env, message.chat.id, "Спасибо, номер сохранён ✓", {
+      reply_markup: { remove_keyboard: true },
+    });
+    await sendWelcome(message.chat.id, env);
+    return;
+  }
+
   if (text.startsWith("/start")) {
     await deleteSession(message.from.id, env);
-    await sendMessage(
-      env,
-      message.chat.id,
-      "<b>Archi Deals</b>\n\nНайдём нужную вещь, сравним варианты и поможем с покупкой. Быстрее всего оформить заказ в мини-приложении.",
-      startKeyboard(),
-    );
+    const contact = await getCustomerContact(message.from.id, env);
+    if (!contact) {
+      await requestPhoneNumber(message.chat.id, env);
+      return;
+    }
+
+    await sendWelcome(message.chat.id, env);
     return;
   }
 
@@ -258,6 +281,11 @@ async function handleUpdate(update, env) {
 
   const session = await getSession(message.from.id, env);
   if (!session) {
+    const contact = await getCustomerContact(message.from.id, env);
+    if (!contact) {
+      await requestPhoneNumber(message.chat.id, env);
+      return;
+    }
     await sendMessage(env, message.chat.id, "Чтобы оформить запрос, нажмите кнопку ниже.", startKeyboard());
     return;
   }
@@ -278,6 +306,11 @@ async function handleCallback(callback, env) {
   await telegram(env, "answerCallbackQuery", { callback_query_id: callback.id });
 
   if (data === "order:start") {
+    const contact = await getCustomerContact(userId, env);
+    if (!contact) {
+      await requestPhoneNumber(chatId, env);
+      return;
+    }
     await startOrder(chatId, userId, env);
     return;
   }
@@ -406,11 +439,12 @@ async function forwardOrder(user, session, env) {
   const orderId = `AD-${Date.now().toString().slice(-6)}`;
   const customer = [user.first_name, user.last_name].filter(Boolean).join(" ");
   const data = session.data;
+  const contact = await getCustomerContact(user.id, env);
   const text = [
     `<b>Новая заявка ${orderId}</b>`,
     "",
     `<b>Клиент:</b> ${escapeHtml(customer || "Без имени")}`,
-    `<b>Связаться:</b> ${formatCustomerContact(user)}`,
+    `<b>Связаться:</b> ${formatCustomerContact(user, contact)}`,
     `<b>Telegram ID:</b> <code>${user.id}</code>`,
     "",
     `<b>Что найти:</b> ${formatValue(data.item)}`,
@@ -420,17 +454,21 @@ async function forwardOrder(user, session, env) {
     `<b>Комментарий:</b> ${formatValue(data.comment)}`,
   ].join("\n");
 
-  const options = adminStatusKeyboard(user.id);
-
-  if (data.reference?.type === "photo") {
-    await telegram(env, "sendPhoto", {
-      chat_id: env.ADMIN_CHAT_ID,
-      photo: data.reference.fileId,
-      caption: `Референс к заявке ${orderId}`,
-    });
-  }
+  const options = adminStatusKeyboard(user, contact);
 
   await sendMessage(env, env.ADMIN_CHAT_ID, text, options);
+
+  if (data.reference?.type === "photo") {
+    try {
+      await telegram(env, "sendPhoto", {
+        chat_id: env.ADMIN_CHAT_ID,
+        photo: data.reference.fileId,
+        caption: `Референс к заявке ${orderId}`,
+      });
+    } catch {
+      await sendMessage(env, env.ADMIN_CHAT_ID, `⚠️ Не удалось загрузить референс к заявке <b>${orderId}</b>.`);
+    }
+  }
 }
 
 async function handleAdminAction(callback, env) {
@@ -509,17 +547,58 @@ function startKeyboard() {
   };
 }
 
-function adminStatusKeyboard(customerId) {
+function contactRequestKeyboard() {
   return {
     reply_markup: {
-      inline_keyboard: [
-        [{ text: "Открыть профиль клиента", url: `tg://user?id=${customerId}` }],
-        [{ text: "Принять", callback_data: `admin:accepted:${customerId}` }],
-        [
-          { text: "Уточнить", callback_data: `admin:clarify:${customerId}` },
-          { text: "Завершить", callback_data: `admin:completed:${customerId}` },
-        ],
-      ],
+      keyboard: [[{ text: "Поделиться номером", request_contact: true }]],
+      resize_keyboard: true,
+      one_time_keyboard: true,
+      input_field_placeholder: "Нажмите кнопку ниже",
+    },
+  };
+}
+
+function requestPhoneNumber(chatId, env) {
+  return sendMessage(
+    env,
+    chatId,
+    "<b>Поделиться вашим номером?</b>\n\nОн нужен только для связи по заявке. Telegram отправит номер после нажатия на кнопку ниже.",
+    contactRequestKeyboard(),
+  );
+}
+
+function sendWelcome(chatId, env) {
+  return sendMessage(
+    env,
+    chatId,
+    "<b>Archi Deals</b>\n\nНайдём нужную вещь, сравним варианты и поможем с покупкой. Быстрее всего оформить заказ в мини-приложении.",
+    startKeyboard(),
+  );
+}
+
+function adminStatusKeyboard(user, contact) {
+  const customerId = String(user?.id || "").replaceAll(/\D/g, "");
+  const username = String(user?.username || "").replace(/^@/, "");
+  const phoneUrl = contactProfileUrl(contact?.phoneNumber);
+  const rows = [];
+
+  if (username) {
+    rows.push([{ text: "Открыть профиль клиента", url: `https://t.me/${username}` }]);
+  } else if (phoneUrl) {
+    rows.push([{ text: "Открыть профиль клиента", url: phoneUrl }]);
+  }
+
+  rows.push(
+    [{ text: "Принять", callback_data: `admin:accepted:${customerId}` }],
+    [
+      { text: "Уточнить", callback_data: `admin:clarify:${customerId}` },
+      { text: "Завершить", callback_data: `admin:completed:${customerId}` },
+    ],
+  );
+
+  return {
+    reply_markup: {
+      inline_keyboard: rows,
     },
   };
 }
@@ -555,6 +634,33 @@ function deleteSession(userId, env) {
   return env.DB.prepare("DELETE FROM sessions WHERE user_id = ?1").bind(userId).run();
 }
 
+async function getCustomerContact(userId, env) {
+  const row = await env.DB.prepare(
+    "SELECT user_id, phone_number, first_name, last_name FROM customer_contacts WHERE user_id = ?1",
+  ).bind(userId).first();
+
+  if (!row) return null;
+  return {
+    userId: Number(row.user_id),
+    phoneNumber: row.phone_number,
+    firstName: row.first_name || "",
+    lastName: row.last_name || "",
+  };
+}
+
+function saveCustomerContact(userId, contact, env) {
+  const phoneNumber = String(contact.phone_number || "").replaceAll(/[^\d+]/g, "");
+  return env.DB.prepare(
+    `INSERT INTO customer_contacts (user_id, phone_number, first_name, last_name, updated_at)
+     VALUES (?1, ?2, ?3, ?4, CURRENT_TIMESTAMP)
+     ON CONFLICT(user_id) DO UPDATE SET
+       phone_number = excluded.phone_number,
+       first_name = excluded.first_name,
+       last_name = excluded.last_name,
+       updated_at = CURRENT_TIMESTAMP`,
+  ).bind(userId, phoneNumber, contact.first_name || "", contact.last_name || "").run();
+}
+
 function cleanExpiredSessions(env) {
   return env.DB.prepare(
     "DELETE FROM sessions WHERE datetime(updated_at) < datetime('now', '-1 day')",
@@ -575,11 +681,23 @@ function formatReference(reference) {
   return "Не указано";
 }
 
-function formatCustomerContact(user) {
-  const userId = String(user?.id || "").replaceAll(/\D/g, "");
-  if (!userId) return "Профиль недоступен";
-  const label = user.username ? `@${escapeHtml(user.username)}` : "Открыть профиль клиента";
-  return `<a href="tg://user?id=${userId}">${label}</a>`;
+function formatCustomerContact(user, contact) {
+  const username = String(user?.username || "").replace(/^@/, "");
+  if (username) return `<a href="https://t.me/${username}">@${escapeHtml(username)}</a>`;
+
+  const phoneUrl = contactProfileUrl(contact?.phoneNumber);
+  if (!phoneUrl) return "Контакт не указан";
+  return `<a href="${phoneUrl}">${escapeHtml(formatPhone(contact.phoneNumber))}</a>`;
+}
+
+function contactProfileUrl(phoneNumber) {
+  const digits = String(phoneNumber || "").replaceAll(/\D/g, "");
+  return digits ? `https://t.me/+${digits}?profile` : "";
+}
+
+function formatPhone(phoneNumber) {
+  const digits = String(phoneNumber || "").replaceAll(/\D/g, "");
+  return digits ? `+${digits}` : "Номер не указан";
 }
 
 function escapeHtml(value) {
